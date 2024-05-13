@@ -26,12 +26,11 @@
         <thead>
             <tr>
                 <th></th>
-               
                 <th>Numero Dossier</th>
                 <th>Compte Client</th>
                 <th>Date Creation</th>
                 <th>Capital</th>
-                <th>Marge</th>
+                <th>Total Marge</th>
                 <th>Type Mourabaha</th>
                 <th>Nombre Echeance</th>
                 <th>Actions</th>  
@@ -40,15 +39,15 @@
         <tbody>
             <tr *ngFor="let amortissement of results">    
                 <td>{{ amortissement.id }}</td>
-                <td>{{ amortissement.NOOPER }}</td>
-                <td>{{ amortissement.CPTVUE }}</td>
-                <td>{{ amortissement.DATOPER }}</td>
-                <td>{{ amortissement.MNTPRT }}</td>
-                <td>{{ amortissement.TOTINT }}</td>
-                <td> type mourabaha </td>
-                <td>{{ amortissement.CSERV }}</td>
+                <td>{{ amortissement.Numero_Dossier }}</td>
+                <td>{{ amortissement.Compte_client }}</td>
+                <td>{{ amortissement.Date_Creation }}</td>
+                <td>{{ amortissement.Capital }}</td>
+                <td>{{ amortissement.Marge }}</td>
+                <td> {{ amortissement.Type }}</td>
+                <td>{{ amortissement.Nbr_Echeance }}</td>
                 <td>
-                    <button type="button" class="btn btn-link" (click)="goToDetails(amortissement.NOOPER,selectedClient)">
+                    <button type="button" class="btn btn-link" (click)="goToDetails(amortissement.Numero_Dossier,selectedClient)">
                       <i class="far fa-list-alt"></i> Détails
                     </button>
                   </td>

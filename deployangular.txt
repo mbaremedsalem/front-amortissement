@@ -54,5 +54,5 @@ server {
 
 sudo nginx -t
 
-sudo supervisorctl reload && sudo sudo systemctl reload nginx
+sudo supervisorctl reload && sudo systemctl reload nginx
 

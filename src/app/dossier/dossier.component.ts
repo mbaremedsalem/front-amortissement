@@ -24,7 +24,6 @@ export class DossierComponent {
         cliprt: this.selectedClient,
         nooper: this.selectedCompte
       };
-
       this.http.post<any[]>('http://127.0.0.1:8000/api/get-pret-cli-compte/', body)
         .subscribe(
           (data) => {
@@ -45,7 +44,6 @@ export class DossierComponent {
     } else if(this.selectedClient && this.selectedCompte==='') { 
       const body = {
         cliprt: this.selectedClient,
-
       };
       this.http.post<any[]>('http://127.0.0.1:8000/api/get-pret-cli/', body)
       .subscribe(
