@@ -9,7 +9,7 @@
       <label for="compte">Dossier</label>
       <input type="text" placeholder="dossier" class="search-input" [(ngModel)]="selectedCompte" id="compte" style="width: 100%;">
     </div>
-    <button style="color: white; background-color: #5538D9; border: 1px; border-radius: 5px; width: 100px; height: 40px;" [disabled]="loginInProgress" mat-raised-button class="example-icon" (click)="search()">
+    <button style="color: white; background-color: #1c8244; border: 1px; border-radius: 5px; width: 100px; height: 40px;" [disabled]="loginInProgress" mat-raised-button class="example-icon" (click)="search()">
       <span *ngIf="!loginInProgress">Search</span>
       <mat-progress-spinner  class="mat-spinner-color" *ngIf="loginInProgress" mode="indeterminate" style="width: 20px;height: 20px; margin:auto;">
       </mat-progress-spinner>
@@ -20,7 +20,7 @@
   </div>
   
   <!-- Affichage des données de la recherche -->
-  <div *ngIf="results" class="flex-container">
+  <div *ngIf="results" class="p-2 d-flex align-items-en">
     <h2>Résultats de la recherche :</h2>
     <table>
         <thead>

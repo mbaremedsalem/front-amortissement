@@ -1,0 +1,55 @@
+sudo yum install dos2unix
+
+dos2unix rest-buckup.sh
+
+./rest-buckup.sh
+
+
+sed -i 's/\r$//' rest-buckup.sh
+
+
+/home/scripts/rest-buckup.sh
+
+# Vérifiez si la session est interactive avant d'exécuter le script
+case $- in
+    *i*) /home/scripts/rest-buckup.sh ;;
+    *) ;;
+esa
+
+
+
+sudo yum install sshpass 
+
+stop_server() {
+    echo "Connexion au serveur distant pour arrêter le serveur..."
+    SSHPASS='votre_password'
+    sshpass -p "$SSHPASS" ssh -o StrictHostKeyChecking=no -t oramw@172.16.3.66 'bash -c "
+        cd /chemin/vers/le/script
+        ./cbsCtl.sh 12 stop cbdom 6556 cb_ManagedServer_1 && ./cbsCtl.sh 12 stop cbdom 6556 AdminServer
+    "'
+
+    if [[ $? -eq 0 ]]; then
+        echo "Le traitement a été terminé."
+    else
+        echo "Le traitement a échoué. Code d'erreur: $?"
+        if [[ $? -eq 255 ]]; then
+            echo "La connexion au serveur distant a échoué."
+        fi
+    fi
+}
+
+
+
+////
+
+stop_server() {
+    ssh oramw@172.16.3.66
+    ./cbsCtl.sh 12 stop cbdom 6556 cb_ManagedServer_1 && AdminServer
+    echo "Le traitement peut duré quelque minute..."
+   #su - oamw -c "systemctl stop server"
+   #su - oamw -c "systemctl stop cb_manager"
+    if [[ $? -eq 0 ]]; then
+     echo "Le traitement a été terminé."
+    else echo "le traitement est echoué $?"
+    fi
+}

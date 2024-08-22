@@ -1,32 +1,69 @@
-<div class="container my-container">
-    <div class="card justify-content-md-center">
-        <div class="card-header text-center">
-            <h3>
-                Se connecter 
-            </h3>
+
+
+
+
+
+<div class="row w-100 mx-0 auth-page">
+    <div class="col-md-8 col-xl-6 mx-auto">
+      <div class="card">
+          <!-- ... autres éléments ... -->
+        <div class="bank-icon">
+            <img src="assets/icons/AUB.png" width="200px" height="100px" alt="Icône de la banque">
+        </div>
+        <div class="row">
+          <div class="col-md-4 pe-md-0">
+            <!--          <div class="auth-side-wrapper" [ngStyle]="{ 'background-image': 'url(https://via.placeholder.com/219x452)' }">-->
+  
+            <!--          </div>-->
           </div>
-       <div class="card-body">
-            <form class="login100-form validate-form" (submit)="login()" >
+          <div class="col-md-8 ps-md-0">
+            <div class="auth-form-wrapper px-4 py-5">
+              <a routerLink="." class="nobleui-logo d-block mb-2">Amortissement-AUB</a>
+              <h5 class="text-muted fw-normal mb-4">Applications pour generer le Tableau d'amortissement</h5>
+              <form class="forms-sample" (submit)="login()" >
                 <div class="mb-3">
-                    <input type="text" class="form-control" [(ngModel)]="credentials.username" [ngModelOptions]="{standalone: true}" placeholder="Username">
+                  <label for="username" class="form-label">Login</label>
+                  <input type="text"
+                         class="form-control"
+                         id="username"
+                         [(ngModel)]="credentials.username" [ngModelOptions]="{standalone: true}"
+                         
+                         placeholder="login">
                 </div>
                 <div class="mb-3">
-                    <input type="password" class="form-control" [(ngModel)]="credentials.password" [ngModelOptions]="{standalone: true}" placeholder="Mot de passe">
+                  <div class="password-input-container">
+                  <label for="password" class="form-label">Mot de passe</label>
+                  <input type="password"
+                         class="form-control"
+                         [(ngModel)]="credentials.password" [ngModelOptions]="{standalone: true}"
+                         
+                         id="password"
+                         #passwordInput
+                         >
+                  <span class="eye-icon" (click)="togglePasswordVisibility(passwordInput)">
+                          <img [src]="showPassword ? 'assets/icons/view.png' : 'assets/icons/hide.png'" class="mat-iconleft" width="25px" height="25px" alt="">
+                        </span>
+                      </div>
                 </div>
-                <div class="mb-3 d-flex justify-content-between">
-                    <a [routerLink]="['/inscrire']" class="btn btn-link">S'inscrire</a>
-                    <div class="container-login100-form-btn">
-                    <button type="submit" class="login100-form-btn" [disabled]="loginInProgress">
-                        <i class="fas fa-check"></i> &nbsp;
-                        <span *ngIf="!loginInProgress">Se connecter</span>
-                        <mat-progress-spinner  class="mat-spinner-color" *ngIf="loginInProgress" mode="indeterminate" style="width: 20px;height: 20px; margin:auto;">
-                        </mat-progress-spinner>
-                    </button>
-                    </div>
+                <div>
+                  <a [routerLink]="['/change-password']" class="txt1">
+                    Change Password?
+                  </a>
                 </div>
-            </form>
-            <div *ngIf="showErrorMessage">
-            </div> 
-       </div>
+                <div>
+                  <button type="submit" class="btn btn-primary me-2 mb-2 mb-md-0" [disabled]="loginInProgress">
+                          
+                          <span *ngIf="!loginInProgress">Connexion</span>
+                            <mat-progress-spinner *ngIf="loginInProgress" mode="indeterminate" style="width: 20px; height: 20px; margin: auto;"></mat-progress-spinner>
+                 
+                 
+                          </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
-</div>
+  </div>
+  

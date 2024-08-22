@@ -5,7 +5,12 @@ deployement angular on server ubuntu using nginx
 2- Utilisez la commande "npm run build" pour créer une version de production de votre application Angular.
  Cela va générer un dossier "dist" contenant les fichiers à servir.
 
-NB: avant de cree une version de production faux que vous connecter en tanque root "sudo su"et donner le droit daccees sur sure tous les fichier par cette commande 
+NB: avant de cree une version de production faux que vous connecter en tanque root "sudo su"et donner le droit daccees sur sure tous les fichier 
+
+sudo chown -R www-data:www-data /appli/catalog/dist/catalog/browser
+sudo chmod -R 755 /appli/catalog/dist/catalog/browser
+
+par cette commande 
 chmod -R 777 /appli/frontend-intranet/ et aussi par fois necessite une aumentation du taille du budget
               "budgets": [
                 {
@@ -54,5 +59,334 @@ server {
 
 sudo nginx -t
 
-sudo supervisorctl reload && sudo systemctl reload nginx
+sudo supervisorctl reload && sudo systemctl reload && sudo systemctl restart gunicorn && sudo systemctl restart bac_cheque_gunicorn
+
+
+
+https://appliaub:82/login
+server {
+    listen 82;
+    server_name 192.168.10.15;
+    # server_name domain_name.com;
+
+    # Configuration pour le projet Angular
+    location / {
+        root /appli/frontend-intranet/dist/front-intranet;
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Configuration pour les fichiers statiques du projet Angular
+    location /static/ {
+        alias /appli/frontend-intranet/dist/front-intranet/static/;
+    }
+
+    # Configuration pour les médias du projet Angular
+    location /media/ {
+        alias /appli/frontend-intranet/dist/front-intranet/media/;
+    }
+}
+
+
+
+backend 
+
+server{
+        listen 80;
+        server_name 192.168.10.15;
+       # server_name domain_name.com;
+
+        location / {
+                include proxy_params;
+                proxy_pass http://unix:/appli/Intranet/app.sock;
+        }
+        location /static/ {
+                autoindex on;
+                alias /appli/Intranet/static/;
+        }
+        location /media/ {
+                autoindex on;
+                alias /appli/Intranet/media/;
+        }
+}
+
+
+------- change ssl ---------
+
+
+server {
+    listen 80;
+    server_name appliaub;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 8000 ssl;
+    server_name appliaub;
+
+    include snippets/self-signed.conf;
+    include snippets/ssl-params.conf;
+
+    # Handle the root location
+    # Add CORS headers for actual requests
+    location / {
+        add_header 'Access-Control-Allow-Origin' 'https://appliaub:82' always;
+        add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS' always;
+        add_header 'Access-Control-Allow-Headers' 'Content-Type' always;
+
+    # Handle preflight requests
+        if ($request_method = 'OPTIONS') {
+                add_header 'Access-Control-Allow-Origin' 'https://appliaub:82';
+                add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+                add_header 'Access-Control-Allow-Headers' 'Content-Type';
+                add_header 'Access-Control-Max-Age' 3600;
+                add_header 'Content-Length' 0;
+                add_header 'Content-Type' 'text/plain charset=UTF-8';
+                return 204;
+        }
+
+        proxy_pass http://appliaub:82;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+
+    location /api/ {
+        proxy_pass http://unix:/appli/Intranet/app.sock;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /admin {
+        proxy_pass http://unix:/appli/Intranet/app.sock;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /static/ {
+        autoindex on;
+        alias /appli/Intranet/static/;
+    }
+
+server{
+        listen 8081;
+        server_name appliaub.mr;
+        server_name appliaub;
+
+        location /admin {
+        proxy_pass http://unix:/appli/Intranet/app.sock;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        }
+        location / {
+                include proxy_params;
+                proxy_pass http://unix:/appli/Intranet/app.sock;
+        }
+        location /static/ {
+                autoindex on;
+                alias /appli/Intranet/static/;
+        }
+        location /media/ {
+                autoindex on;
+                alias /appli/Intranet/media/;
+        }
+}
+
+
+---- frontend -----
+server {
+    listen 80;
+    server_name appliaub;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 82 ssl;
+    server_name appliaub;
+
+    include snippets/self-signed.conf;
+    include snippets/ssl-params.conf;
+
+    location / {
+        root /appli/frontend-intranet/dist/front-intranet;
+        try_files $uri $uri/ /index.html;
+    }
+
+    location /static/ {
+        alias /appli/frontend-intranet/dist/front-intranet/static/;
+    }
+
+    location /media/ {
+        alias /appli/frontend-intranet/dist/front-intranet/media/;
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+last 
+
+
+
+server {
+     listen 80;
+#    server_name 192.168.10.15;
+     server_name aubaplli;
+    # Redirige toutes les requêtes HTTP vers HTTPS
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 8000 ssl;
+#    server_name 192.168.10.15;
+     server_name appliaub;
+    ssl_certificate /etc/ssl/certs/nginx-selfsigned.crt;
+    ssl_certificate_key /etc/ssl/private/nginx-selfsigned.key;
+
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_prefer_server_ciphers on;
+    ssl_ciphers "EECDH+AESGCM:EDH+AESGCM:AES256+EECDH:AES256+EDH";
+    ssl_ecdh_curve secp384r1;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+
+    # Proxy pour l'application Angular sur le port 82
+    location / {
+#       proxy_pass http://192.168.10.15:82;
+        proxy_pass http://appliaub:82;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    # Proxy pour le backend Django sur le port 8000
+    location /api/ {
+        proxy_pass http://unix:/appli/Intranet/app.sock;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /static/ {
+        autoindex on;
+        alias /appli/Intranet/static/;
+    }
+
+    location /media/ {
+        autoindex on;
+        alias /appli/Intranet/media/;
+    }
+}
+
+
+sertificat 
+
+
+sudo cp /etc/ssl/certs/nginx-selfsigned.crt /etc/ssl/certs/nginx-selfsigned.crt.bak
+sudo cp /etc/ssl/private/nginx-selfsigned.key /etc/ssl/private/nginx-selfsigned.key.bak
+
+sudo cp /path/to/your/new/your_domain.crt /etc/ssl/certs/nginx-selfsigned.crt
+sudo cp /path/to/your/new/your_domain.key /etc/ssl/private/nginx-selfsigned.key
+
+sudo cat /path/to/your/new/your_domain.crt /path/to/your/new/intermediate.crt > /etc/ssl/certs/nginx-selfsigned.crt
+
+-------------- 
+
+server {
+    listen 443 ssl;
+    server_name appliaub;
+
+    include snippets/self-signed.conf;
+    include snippets/ssl-params.conf;
+
+    location / {
+        proxy_pass http://appliaub:82;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /api/ {
+        proxy_pass http://unix:/appli/Intranet/app.sock;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /admin {
+        proxy_pass http://unix:/appli/Intranet/app.sock;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+
+    location /static/ {
+        autoindex on;
+        alias /appli/Intranet/static/;
+    }
+
+    location /media/ {
+        autoindex on;
+        alias /appli/Intranet/media/;
+    }
+}
+
+server {
+    listen 80;
+    server_name appliaub;
+    return 301 https://$server_name$request_uri;
+}
+
+
+
+
+
+##########--------------  deploy backend --------######
+1-donner le droit 
+sudo chown -R srv-appli:www-data /appli/bac-cheque
+sudo chmod -R 755 /appli/bac-cheque
+  
+2-modifier le service 
+
+sudo nano /etc/systemd/system/bac_cheque_gunicorn.service
+
+[Unit]
+Description=gunicorn daemon for bac-cheque
+After=network.target
+
+[Service]
+User=srv-appli
+Group=www-data
+WorkingDirectory=/appli/bac-cheque
+ExecStart=/appli/venv/bin/gunicorn --workers 3 --bind unix:/appli/bac-cheque/project.sock project.wsgi:application --access-logfile -
+
+[Install]
+WantedBy=multi-user.target
+
+3- restarter le service et verifier 
+
+sudo systemctl daemon-reload
+sudo systemctl start bac_cheque_gunicorn
+sudo systemctl status bac_cheque_gunicorn
 

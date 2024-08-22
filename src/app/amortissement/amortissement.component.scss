@@ -36,13 +36,16 @@ tr:hover {
 }
 
 .flex-container {
+    margin: auto;
+    text-align: center;
     padding-top: 10px;
     display: flex;
     justify-content: space-between;
   }
 
 .left-content,.right-content {
-    flex-basis: 100%;
+    padding: 10px;
+
 }
 .TB-flex-container  {
     padding-top: 20px;
@@ -55,3 +58,23 @@ tr:hover {
     max-width: 100%;
     margin-bottom: 20px;
   }
+
+.entet1{ 
+    padding-top: 20px;
+    padding-bottom: 8px;
+    margin: auto;
+    text-align: center;
+    font-size: 20px;
+    font-family: Arial, Helvetica, sans-serif;
+    
+ }
+ li{  
+    margin: auto;
+    text-align: start;
+
+   }
+
+.btn-success { 
+    margin: auto;
+    text-align: end;
+   }

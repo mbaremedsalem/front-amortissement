@@ -1,0 +1,29 @@
+generere un cle rsa 
+ssh-keygen -t rsa -b 2048
+
+on le copie dans le server distance 
+ssh-copy-id oramw@172.16.3.66
+
+
+et on fait la connection 
+
+
+stop_server() {
+    echo "Connexion au serveur distant pour arrêter le serveur..."
+    ssh -o StrictHostKeyChecking=no -t oramw@172.16.3.66 '
+        cd /home/scripts/
+        ./cbsCtl.sh 12 stop cbdom 6556 cb_ManagedServer_1 && ./cbsCtl.sh 12 stop cbdom 6556 AdminServer
+    '
+
+    if [[ $? -eq 0 ]]; then
+        echo "Le traitement a été terminé."
+    else
+        echo "Le traitement a échoué. Code d'erreur: $?"
+        if [[ $? -eq 255 ]]; then
+            echo "La connexion au serveur distant a échoué."
+        fi
+    fi
+}
+
+
+la cle generer est "tfg"

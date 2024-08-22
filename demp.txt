@@ -1,0 +1,17 @@
+sqlplus / as sysdba @AUB.gen
+EXIT;
+cd /u01/inst/scripts
+./createDBSchema.sh CAPITALBANKER AUB BKPROD manager1 USR N aub
+
+impdp directory=dmp schemas=aub dumpfile=expdppcAUBV4.dmp logfile=import-expdppcAUBV4.dmp.log
+
+
+cp -r /home/exploi/dmp/expdppcAUBV4.dmp
+
+
+1- Renommer le DMP
+mv /export/home2/aub/dmp/expdppcAUBV4.dmp /export/home2/aub/dmp/expdppcAUBV4_old.dmp
+
+
+
+impdp directory=dmp schemas=aub dumpfile=expdppcAUBV4.dmp logfile=imp-aub_202401367.dmp.log

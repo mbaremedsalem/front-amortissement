@@ -1,68 +1,68 @@
-<div *ngIf="entetCliData" class="flex-container">
-  <div class="left-content">
-    <h1>Données du dossier</h1>
-    <ul>
-      <li><strong>Numéro de dossier:</strong>  {{ entetCliData[0]?.Numero_Dossier }}</li>
-      <li><strong>Type De Pret:</strong> {{ entetCliData[0]?.Type_De_Pret }}</li>
-      <li><strong>Date Mis En Place:</strong> {{ entetCliData[0]?.date_mep | date:'dd/MM/yyyy'}}</li>
-      <li><strong>Date 1ère échéance:</strong> {{ entetCliData[0]?.date_1ech | date:'dd/MM/yyyy'}}</li>
-      <li><strong>Date Derniere échéance:</strong> {{ entetCliData[0]?.date_dern_ech | date:'dd/MM/yyyy'}}</li>
-    </ul>
+<div class="container">
+  <div class="entet1">
+  Tableau d'Amortissement
+  </div>
+  <div *ngIf="entetCliData" class="flex-container">
+    
+
+    <div class="left-content">
+      <ul class="list-unstyled">
+        <li><strong>Numéro de dossier:</strong> {{ entetCliData[0]?.Numero_Dossier }}</li>
+        <li><strong>Type De Pret:</strong> {{ entetCliData[0]?.Type_De_Pret }}</li>
+        <li><strong>Date Mis En Place:</strong> {{ entetCliData[0]?.date_mep | date:'dd/MM/yyyy'}}</li>
+        <li><strong>Date 1ère échéance:</strong> {{ entetCliData[0]?.date_1ech | date:'dd/MM/yyyy'}}</li>
+        <li><strong>Date Derniere échéance:</strong> {{ entetCliData[0]?.date_dern_ech | date:'dd/MM/yyyy'}}</li>
+        <li><strong>Total Marge:</strong> {{ (entetCliData[0]?.totalMarge | number: '1.2-2')?.replace(',', ' ') }} MRU</li>
+      </ul>
+    </div>
+    
+    <div class="right-content">
+      <ul class="list-unstyled">
+        <li><strong>Prix d'Achat(Capital):</strong> {{ (entetCliData[0]?.prix_achat | number: '1.2-2')?.replace(',', ' ') }} MRU</li>
+        <li><strong>Prix de Vente (HT):</strong> {{ (entetCliData[0]?.prix_vente | number: '1.2-2')?.replace(',', ' ')}} MRU</li>
+        <li><strong>Prix de Vente (TTC):</strong> {{ (entetCliData[0]?.prix_vente_TTC | number: '1.2-2')?.replace(',', ' ')}} MRU</li>
+
+        <li><strong>Frais Dossier:</strong> {{ (entetCliData[0]?.frais_dossier | number: '1.2-2')?.replace(',', ' ')}} MRU</li>
+        <li><strong>Frais Etudes:</strong> {{ (entetCliData[0]?.frais_detude | number: '1.2-2')?.replace(',', ' ')}} MRU</li>    
+
+        <li><strong>Durée de mourabaha:</strong> {{ entetCliData[0]?.duree_mourabaha }} Mois</li>
+        <li><strong>TOF:</strong> <span class="badge bg-secondary">{{ entetCliData[0]?.TOF }}%</span></li>
+      </ul>
+    </div>
+  </div>
+
+
+  <div class="p-2 d-flex align-items-end">
+    <button type="button" class="btn btn-success" (click)="printTable()">
+      <i class="fas fa-cloud-download-alt"></i>&nbsp; Imprimer
+    </button>
   </div>
   
-  <div class="right-content">
-    <h1>Prix</h1>
-    <ul>
-      <li><strong>Prix d'Achat(Capital):</strong> {{ entetCliData[0]?.prix_achat }} MRU</li>
-      <li><strong>Prix de Vente (HT):</strong> {{ entetCliData[0]?.prix_vente }} MRU</li>
-      <li><strong>Prix de Vente (TTC):</strong> {{ entetCliData[0]?.prix_vente_TTC }} MRU</li>
-      <li><strong>Durée de mourabaha:</strong> {{ entetCliData[0]?.duree_mourabaha }} Mois</li>
-      <li><strong>TOF:</strong> {{ entetCliData[0]?.TOF }}%</li>
-    </ul>
-  </div>
-</div>
-
-
-<div class="p-2 d-flex align-items-center ">
-  <h2 class="flex-grow-1">Tableau d'Amortissement</h2>
-  <button type="button" class="btn btn-success" (click)="printTable()">
-    <i class="fas fa-cloud-download-alt"></i>&nbsp; Imprimer
-  </button>
-</div>
-<div class="TB-flex-container"> 
-  <table>
-    <thead>
+  <div class="TB-flex-container"> 
+    <table class="table table-bordered table-striped">
+      <thead>
         <tr>
-            <th>Numero</th>
-            <th>Date</th>
-            <th class="mont">Capital</th>
-            <th class="mont">Marge</th>
-            <th class="mont">TOF</th>
-            <th class="mont">Echéance</th>
-            <th class="mont">Capital Restent Dû</th>
+          <th>Numero</th>
+          <th>Date</th>
+          <th class="mont">Capital</th>
+          <th class="mont" *ngIf="marge!=0.00">Marge</th>
+          <th class="mont" *ngIf="tof!=0.00">TOF</th>
+          <th class="mont">Echéance</th>
+          <th class="mont">Capital Restent Dû</th>
         </tr>
-    </thead>
-    <tbody>
+      </thead>
+      <tbody>
         <tr *ngFor="let amortissement of results">
-  
-          
-            <td>{{ amortissement.id }}</td>
-            <td>{{ amortissement.DATRMB | date:'dd/MM/yyyy'}} </td>
-            <td class="mont">{{ amortissement.MNTCAP }}</td>
-            <td class="mont">{{ amortissement.MNTINT }}</td>
-            <td class="mont">{{ amortissement.MNTTAXE }}</td>
-            <td class="mont">{{ amortissement.MNTRMB }}</td>
-            <td class="mont">{{ amortissement.SLDAMO }}</td>
-  
-          </tr>
-  
+          <td>{{ amortissement.id }}</td>
+          <td>{{ amortissement.DATRMB | date:'dd/MM/yyyy'}} </td>
+          <td class="mont">{{  (amortissement.MNTCAP | number: '1.2-2')?.replace(',', ' ') }}</td>
+          <td class="mont" *ngIf="marge!=0.00">{{  (amortissement.MNTINT  | number: '1.2-2')?.replace(',', ' ')}}</td>
+          <td class="mont" *ngIf="tof!=0.00">{{  (amortissement.MNTTAXE | number: '1.2-2')?.replace(',', ' ')}}</td>
+          <td class="mont">{{  (amortissement.MNTRMB | number: '1.2-2')?.replace(',', ' ')}}</td>
+          <td class="mont">{{  (amortissement.SLDAMO | number: '1.2-2')?.replace(',', ' ')}}</td>
+        </tr>
         <!-- Ajoutez plus de lignes de données au besoin -->
-    </tbody>
-  
-      
-  </table>
-  
-  
+      </tbody>
+    </table>
+  </div>
 </div>
-
-
