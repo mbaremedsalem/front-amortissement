@@ -3,6 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { AmortissementComponent } from './amortissement/amortissement.component';
 import { LoginComponent } from './login/login.component';
 import { DossierComponent } from './dossier/dossier.component';
+import { TabarouComponent } from './tabarou/tabarou.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,11 @@ const routes: Routes = [
     path:'dossier',
     component:DossierComponent
   },
+  {
+    path:'',
+    component:TabarouComponent
+  },
+  
 ];
 
 @NgModule({

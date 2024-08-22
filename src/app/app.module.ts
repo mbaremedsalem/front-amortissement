@@ -13,13 +13,15 @@ import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { FormsModule } from '@angular/forms';
 
 import { DossierComponent } from './dossier/dossier.component';
+import { TabarouComponent } from './tabarou/tabarou.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     AmortissementComponent,
-    DossierComponent
+    DossierComponent,
+    TabarouComponent
   ],
   imports: [
     BrowserModule,
